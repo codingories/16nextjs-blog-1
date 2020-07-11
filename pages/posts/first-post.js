@@ -10,10 +10,6 @@ export default function X(){
   return (
     <>
       {/*React.Fragment*/}
-      <Head>
-        <title>我的第一篇文章</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
       <div>
         First Post
         <button onClick={clickMe}>click me</button>

@@ -4,11 +4,6 @@ import Link from "next/link"
 export default function Home() {
   return (
     <div className="container">
-      <Head>
-        <title>我的博客</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
       <main>
         <h1 className="title">
           第一篇文章
