@@ -3,7 +3,7 @@ import Link from "next/link"
 import Head from "next/dist/next-server/lib/head"
 
 console.log('执行了2')
-export default function X(){
+export default function FirstPost(){
   const clickMe = useCallback(()=>{
     console.log('you click me')
   },[]) // useCallback 避免每次创建都执行
