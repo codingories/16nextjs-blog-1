@@ -1,4 +1,5 @@
 import Head from 'next/head'
+import Link from "next/link"
 
 export default function Home() {
   return (
@@ -10,7 +11,11 @@ export default function Home() {
 
       <main>
         <h1 className="title">
-          Hello <a href="https://nextjs.org">Next.js!</a>
+          第一篇文章
+          <Link href="/posts/first-post">
+            <a>点击这里</a>
+          </Link>
+
         </h1>
 
         <p className="description">
