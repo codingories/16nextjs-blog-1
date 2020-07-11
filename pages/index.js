@@ -1,4 +1,5 @@
 import Head from 'next/head'
+import React from "react"
 
 export default function Index() {
   return (
@@ -11,6 +12,12 @@ export default function Index() {
         }
       `}
       </style>
+      <style jsx global>{`
+       body{
+        background-color:blue;
+       }
+`
+      }</style>
     </div>
   )
 }
