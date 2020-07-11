@@ -6,6 +6,7 @@ export default function Index() {
     <div>
       <h1>标题1</h1>
       <p>段落</p>
+      <img src="/1.jpg" alt=""/>
       {s}
 
 
