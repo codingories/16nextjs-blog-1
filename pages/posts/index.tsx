@@ -1,17 +1,28 @@
 import {NextPage} from 'next';
 import axios from 'axios';
-import {useEffect} from 'react';
+import {useEffect, useState} from 'react';
+
+type Post = {
+  id: string;
+  date: string;
+  tile: string;
+}
 
 const PostsIndex: NextPage = () => {
+  const [posts, setPosts] = useState<Post[]>([]);
   useEffect(() => {
-    axios.get('/api/v1/posts').then(x=>{
-      console.log(x.data)
-    })
+    axios.get('/api/v1/posts').then(response => {
+      setPosts(response.data);
+    });
   }, []); //写[]，表示第一次渲染请求，不写表示此次都请求
 
   return (
     <div>
-      Posts Index
+      {posts.map(p=>{
+        <div key={p.id}>
+          {p.id}
+        </div>
+      })}
     </div>
   );
 };
