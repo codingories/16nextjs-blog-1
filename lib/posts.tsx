@@ -9,8 +9,6 @@ export const getPosts = async () => {
   const posts = fileNames.map(fileName => {
     const fullPath = path.join(markdownDir, fileName);
     const id = fileName.replace(/\.md$/g, '');
-    console.log('fullPath');
-    console.log(fullPath);
     const text = fs.readFileSync(fullPath, 'utf-8');
     // const {data, content} = matter(text);
     // const {title, date} = data;
