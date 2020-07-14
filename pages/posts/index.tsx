@@ -1,32 +1,12 @@
 import {NextPage} from 'next'
 import axios from 'axios'
 import {useEffect, useState} from 'react'
+import { usePosts } from 'hooks/usePosts'
 
-type Post = {
-  id: string;
-  date: string;
-  title: string;
-}
+
 
 const PostsIndex: NextPage = () => {
-  const [posts, setPosts] = useState<Post[]>([])
-  const [isLoading, setIsLoading] = useState(false)
-  const [isEmpty, setIsEmpty] = useState(false)
-  useEffect(() => {
-    setIsLoading(true)
-    axios.get('/api/v1/posts').then(response => {
-      setTimeout(()=>{
-        setPosts(response.data)
-        setIsLoading(false)
-        if(response.data.length === 0){
-          setIsEmpty(true)
-        }
-      })
-    }), () => {
-      setIsLoading(false)
-    }
-  }, []) //写[]，表示第一次渲染请求，不写表示此次都请求
-
+  const {isLoading, isEmpty, posts} = usePosts()
   return (
     <div>
       <h1>文章列表</h1>
