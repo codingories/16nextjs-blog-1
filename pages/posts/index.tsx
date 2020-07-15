@@ -10,7 +10,7 @@ type Props = {
 
 const PostsIndex: NextPage<Props> = (props) => {
   console.log(props.posts);
-  const {posts} = [props]
+  const {posts} = props
   return (
     <div>
       <div>没有文章</div>
@@ -25,11 +25,10 @@ export default PostsIndex
 
 export const getStaticProps = async () => {
   const posts = await getPosts()
-  console.log('fuck')
   console.log(posts)
   return {
     props: {
-      posts: JSON.stringify(posts)
+      posts: JSON.parse(JSON.stringify(posts))
     }
   }
 }
