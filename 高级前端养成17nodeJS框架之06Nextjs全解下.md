@@ -214,3 +214,72 @@ tags: 高级前端
     - 但这次的服务端渲染不能用 getStaticProps
     - 因为 getStaticProps 是在 build 时执行的
     - 可用 getServerSideProps(context: NextPageContext)
+
+十七. getServerSideProps
+
+- 运行时机
+  - 无论是开发还是生产环境
+  - 都是在<label style="color:red">请求到来之后运行</label>getServerSideProps
+- 回顾一下 getStaticProps
+  - 开发环境，每次请求到来后运行，方便开发
+  - 生产环境,<label style="color:red">build 时运行一次
+- 参数
+  - context,类型为 NextPageContext
+  - context.req/context.res 可以获取请求和响应
+  - 一般只需要用到 context.req
+
+十八. 示例展示用户浏览器
+
+```
+const index:NextPage<Props> = (props) => {
+  const {browser} = props;
+  return (
+    <div>
+     <h1>你的浏览器是:{browser.name}</h1>
+    </div>
+  )
+};
+export default index;
+
+export const getServerSideProps: GetServerSideProps = async (context)=> {
+  const ua = context.req.headers['user-agent'];
+  const result = new UAParser(ua).getResult();
+  return {
+    props: {
+      browser: result.browser
+    }
+  }
+};
+```
+
+十九. 总结
+
+1. 静态内容
+   - 直接输出 HTML,没有术语
+2. 动态内容
+   - 术语: 客户端渲染，通过 AJAX 请求，渲染成 HTML
+3. 动态内容静态化
+   - 术语: SSG, 通过 getStaticProps 获取用户无关内容
+4. 用户相关动态内容静态化
+   - 术语: SSR, 通过 getServerSideProps 获取请求
+   - 缺点: 无法获取客户端信息，如浏览器窗口大小
+
+二十. 流程图
+
+- ![流程图.png](https://i.loli.net/2020/07/18/zRc7QeYbJ1hNGkf.png)
+- 有动态内容吗？没有什么都不用做，自动渲染为 HTML
+- 动态内容跟客户端相关吗？相关就只能用客户端渲染(BSR)
+- 动态内容跟用户的请求/用户相关吗？相关就只能用服务端渲染(SSR)或 BSR
+- 其他情况可以用 SSG 或 SSR 或 BSR
+
+二十一. 还差一个功能
+
+- 点击 posts 列表查看文章
+  - 简单，不就是加个 Link>a 标签吗
+  - href = `'/posts/${id}'`
+- 新建的文件名应该叫做什么
+  - `pages/posts/[id].tsx`
+  - 文件名就是`[id].tsx`
+- `/pages/posts/[id].tsx的作用`
+  - 既声明了路由/posts/:id
+  - 又是/posts/:id 的页面实现程序
