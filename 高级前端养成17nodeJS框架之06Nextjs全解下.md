@@ -296,3 +296,29 @@ export const getServerSideProps: GetServerSideProps = async (context)=> {
   - 中断 yarn dev
   - yarn build 然后看一下.next/server 目录
   - yarn start
+
+二十三. 填坑
+
+- 接收不同的 json 数据
+- fallback:false 的作用
+  - 是否自动兜底
+  - false 表示如果请求的 id 不在 getStaticPaths 的结果里，直接返回 404 页面
+  - true 表示自动兜底，id 找不到依然渲染页面
+  - 注意 id 不再结果里不代表 id 不存在，比如大型项目无法将所有产品页面都静态化，只静态化部分 id 对应的页面
+
+二十四. 最后总结
+
+- 制作 API
+  - 放在/pages/api/目录里,一般加一个 v1
+- 三种渲染方式
+  - BSR/SSG/SSR
+  - 流程图
+- 三个 API
+  - getStaticProps(SSG)
+  - getStaticPaths(SSG)
+  - getServerSideProps(SSR)
+- 概念
+  - 白屏
+  - BSR 为什么不适合 SEO
+  - 静态化是什么
+  - 同构是什么
