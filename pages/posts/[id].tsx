@@ -1,4 +1,4 @@
-import {getPost} from '../../lib/posts';
+import {getPost, getPostIds} from '../../lib/posts';
 import * as React from 'react';
 
 type Props = {
@@ -20,14 +20,11 @@ const postsShow: Next<Props> = (props) => {
 export default postsShow;
 
 export const getStaticPaths = async ()=> {
+  const idList = await getPostIds();
+  console.log('idList',idList);
+  console.log('idList.map(id => ({params: {id:id}}))',idList.map(id => ({params: {id:id}})));
   return {
-    paths: [
-      {
-        params:{id: '第一篇博客'}
-      },{
-        params:{id: '第二篇博客'}
-      },
-    ],
+    paths: idList.map(id => ({params: {id:id}})),
     fallback: false
   };
 }; // 1,获取所有id的穷举,穷举了才可能把页面提前生成

@@ -26,3 +26,8 @@ export const getPost = async (id: string)=> {
     id, title, date, content
   }));
 };
+
+export const getPostIds = async () => {
+  const fileNames = await fsPromise.readdir(markdownDir); // 获得markdown文件下的文件名
+  return fileNames.map(fileName => fileName.replace(/\.md$/g, ''))
+};
