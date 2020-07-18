@@ -283,3 +283,16 @@ export const getServerSideProps: GetServerSideProps = async (context)=> {
 - `/pages/posts/[id].tsx的作用`
   - 既声明了路由/posts/:id
   - 又是/posts/:id 的页面实现程序
+
+二十二. 如何写`[id].tsx`
+
+- 步骤
+  - 实现 PostsShow, 从 props 接收 post 数据
+  - 实现 getStaticProps, 从第一个参数接收 params.id
+  - 实现 getStaticPaths,返回 id 列表
+- 优化
+  - 使用 marked 得到 markdown 的 HTML 内容
+- build
+  - 中断 yarn dev
+  - yarn build 然后看一下.next/server 目录
+  - yarn start

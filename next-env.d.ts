@@ -14,4 +14,5 @@ type Post = {
   date: string;
   title: string;
   content: string;
+  htmlContent: string;
 }

@@ -10,8 +10,7 @@ const postsShow: Next<Props> = (props) => {
   return (
     <div>
       <h1>{post.title}</h1>
-      <article>
-        {post.content}
+      <article dangerouslySetInnerHTML={ {__html: post.htmlContent} }>
       </article>
     </div>
   )
