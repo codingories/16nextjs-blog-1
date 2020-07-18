@@ -49,6 +49,12 @@ tags: 高级前端
 - 静态页面生成(SSG)
   - Static Site Generation,解决白屏问题，SEO 问题
   - 无法生成用户相关内容(所有用户请求的结果都一样)
+  - 什么是动态内容静态化
+    - 其实每个人看到的文章列表都是一样的
+    - 为什么还需要在每个人的浏览器上渲染一次
+    - 为什么不在后端渲染好，然后发给每个人
+    - N 次渲染变成了一次渲染
+    - N 次客户端渲染变成了一次静态页面生成
 - 服务端渲染(SSR)
   - 解决白屏问题，SEO 问题
   - 可以生成用户相关内容(不同用户结果不同)
@@ -90,13 +96,121 @@ tags: 高级前端
 - 一般来说，静态内容是写在代码里的，动态内容是来自数据库的，我们将尝试用文件系统代替数据库
 
 九. 思考
-  - 上图中的静态内容
-    - 是服务端渲染的，还是客户端渲染的
-    - 渲染了几次，一次还是两次
-  - 参考React SSR的官方文档
-    - 推荐在后端renderToString()在前端hydrate()
-    - hydrate()混合，会保留HTML并附上事件监听
-    - 也就是说后端渲染HTML,前端添加监听
-    - 前端也会渲染一次，用以确保前后端渲染结果一致
-  - 推论
-    - 所有页面至少有一个标签是静态内容，由服务器渲染
+
+- 上图中的静态内容
+  - 是服务端渲染的，还是客户端渲染的
+  - 渲染了几次，一次还是两次
+- 参考 React SSR 的官方文档
+  - 推荐在后端 renderToString()在前端 hydrate()
+  - hydrate()混合，会保留 HTML 并附上事件监听
+  - 也就是说后端渲染 HTML,前端添加监听
+  - 前端也会渲染一次，用以确保前后端渲染结果一致
+- 推论
+  - 所有页面至少有一个标签是静态内容，由服务器渲染
+
+十. getStaticProps 获取 posts
+
+- 声明位置
+  - 每个 page 不是默认导出一个函数么？
+  - 把 getStaticProps 声明在这个函数旁边即可
+  - 必须加 export
+- 写法
+  ```
+    export const getStaticProps = async () => {
+      const posts = await getPosts()
+      return {
+        props: {
+          posts: posts
+        }
+      }
+    }
+  ```
+
+十一. getStaticProps
+
+- 如何使用 props
+
+```
+  export default function PostsIndex = (props)
+    => {...}
+  默认导出的函数的第一个参数就是props
+```
+
+- 如何给 props 添加类型
+
+```
+  const PostsIndex: NextPage<{ posts: Post[] }>
+    = (props) => {...}
+```
+
+    - 把 function 改成const + 箭头函数
+    - 类型声明为NextPage
+    - 用范型给NextPage传个参数```<XProps>```
+    - Props 就是 props 的类型
+
+十二. 同构
+
+- ![同构.png](https://i.loli.net/2020/07/18/lCF7LJGZEMAmxXv.png)
+- 有没有发现
+  - 前端不用 AJAX 也能拿到 posts 了
+  - 这就是同构 SSR 的好处: 后端数据可以直接传给前端
+  - 前端 JSON.parse 一下就能得到了 posts（帮你做了）
+- 难道 PHP/Java/Python 就不做不到么
+  - 其实也可以做到，思路一样
+  - 但是它们不支持 JSX，很难与 React 无缝对接
+  - 而且它们的对象不能直接提供给 JS 用，需要类型转换
+
+十三. 静态化的时机
+
+- 环境
+  - 在开发环境，每次请求都会运行一次 getStaticProps
+  - 这是为了方便你修改代码重新运行
+  - 在生产环境，getStaticProps 只在 build 时运行一次
+  - 这样可以提供一份 HTML 给所有用户下载
+- 如何体验生产环境
+  - 关掉 yarn dev
+  - yarn build
+  - yarn start
+
+十四. 生产环境
+
+- 解读
+  - λ（Server）SSR 不能自动创建 HTML
+  - ○(Static)自动创建 HTML(发现没用到 props)
+  - ●(SSG)自动创建 HTML JS JSON(发现用到了 props)
+- 三种文件类型
+  - posts.html 含有静态内容，用于用户直接访问
+  - posts.js 也含有静态内容，用于快速导航（与 HTML 对应）
+  - posts.json 含有数据，跟 posts.js 结合得到界面
+- 为了让 posts.js 接收不同的数据所以不直接把数据放入 posts.js
+- 目前只能接收来自 getStaticProps 的一个数据
+
+十五. 小结
+
+- **动态内容静态化**
+  - 如果动态内容与用户无关，那么可以提前静态化
+  - 通过 getStaticProps 可以获取数据
+  - **静态内容** + **数据(本地获取)** 就可以得到了完整页面
+  - 代替了之前的**静态内容+动态内容(AJAX 获取)**
+- 时机
+  - 静态化是在 yarn build 的时候实现的
+- 优点
+  - 生产环境中直接给出完整页面
+  - 首屏不会白屏
+  - 搜索引擎能看到页面内容，方便 SEO
+
+十六. 如果页面跟用户相关呢？
+
+- 比如根据用户的 user id 显示不同的信息流
+- 用户相关动态内容
+  - <label style="color:red">较难提前静态化</label>
+    - 需要在<label style="color:red">用户请求时</label>，获取用户信息，然后<label style="color:red">通过用户信息去数据库</label>拿数据
+    - <label style="color:gray">如果硬要做，就要给每个用户创建一个页面</label>
+    - 有时候这些数据<label style="color:red">更新极快</label>，无法提前静态化
+    - 比如微博首页的信息流
+  - <label style="color:red">那怎么办？</label>
+    - 要么客户端渲染，下拉更新
+    - 要么服务端渲染，下拉更新
+    - 但这次的服务端渲染不能用 getStaticProps
+    - 因为 getStaticProps 是在 build 时执行的
+    - 可用 getServerSideProps(context: NextPageContext)

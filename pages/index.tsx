@@ -1,10 +1,31 @@
-import png from 'assets/images/1.jpg'
-export default function Index() {
+import Link from 'next/link';
+import {UAParser} from 'ua-parser-js'
+import {GetServerSideProps, NextPage} from 'next';
+
+type Props = {
+  browser: {
+    name: string;
+    version: string;
+    major: string;
+  }
+}
+
+const index:NextPage<Props> = (props) => {
+  const {browser} = props;
   return (
     <div>
-      <h1>标题1</h1>
-      <p>段落</p>
-      <img src={png} alt=""/>
+     <h1>你的浏览器是:{browser.name}</h1>
     </div>
   )
-}
+};
+export default index;
+
+export const getServerSideProps: GetServerSideProps = async (context)=> {
+  const ua = context.req.headers['user-agent'];
+  const result = new UAParser(ua).getResult();
+  return {
+    props: {
+      browser: result.browser
+    }
+  }
+};
